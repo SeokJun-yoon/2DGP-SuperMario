@@ -14,3 +14,6 @@ class Ground:
         # left, bottom, img.넓이 , 높이, x위치, y위치 , x사이즈, y사이즈
         for i in range(8):
             self.image.draw(self.size/2+i*self.size, self.size/2,self.size,self.size)
+
+    def update(self):
+        pass

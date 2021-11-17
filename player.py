@@ -1,17 +1,114 @@
+import game_framework
 from pico2d import *
+
+# Mario Run Speed
+PIXEL_PER_METER = (10.0 / 0.01) # 10 pixel 1 cm
+RUN_SPEED_KMPH = 5.0 # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH*1000.0/60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Mario Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 3
+
+# Mario Event
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE = range(5)
+
+# key event_table
+key_event_table = {
+    (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
+    (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
+    (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
+    (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
+    (SDL_KEYDOWN, SDLK_SPACE): SPACE
+}
+
+
+class IdleState:
+    def enter(mario, event):
+        if event == RIGHT_DOWN:
+            mario.velocity += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            mario.velocity -= RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            mario.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            mario.velocity += RUN_SPEED_PPS
+
+    def exit(mario, event):
+        #if event == SPACE:
+        pass
+
+    def do(mario):
+        mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+
+    def draw(mario):
+        if mario.dir == 1:
+            mario.Idle_image.clip_draw(int(mario.frame) * 210, mario.index * 290, 210, 290, mario.x, mario.y, 100, 140)
+        else:
+            mario.Idle_image.clip_draw(int(mario.frame) * 210, mario.index * 290, 210, 290, mario.x, mario.y, 100, 140)
+
+
+class RunState:
+    def enter(mario, event):
+        if event==RIGHT_DOWN:
+            mario.velocity +=RUN_SPEED_PPS
+        elif event==LEFT_DOWN:
+            mario.velocity -= RUN_SPEED_PPS
+        elif event ==RIGHT_UP:
+            mario.velocity -=RUN_SPEED_PPS
+        elif event==LEFT_UP:
+            mario.velocity +=RUN_SPEED_PPS
+        mario.dir = clamp(-1, mario.velocity, 1)
+        pass
+
+    def exit(mario, event):
+        pass
+
+    def do(mario):
+        mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        mario.x += mario.velocity * game_framework.frame_time
+        mario.x = clamp(25, mario.x, 1024 - 25)
+
+    def draw(mario):
+        if mario.dir == 1:
+            mario.Run_image.clip_draw(int(mario.frame)*223, mario.index*275, 223, 275, mario.x, mario.y, 100, 140)
+        else:
+            mario.Run_image.clip_draw(int(mario.frame)*223, mario.index*275, 223, 275, mario.x, mario.y, 100, 140)
+
+# class JumpState:
+#     def enter(mario, event):
+#         if event == SPACE:
+
+next_state_table = {
+    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState},
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: RunState},
+    #SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState}
+}
 
 class Mario:
     def __init__(self): # 생성자
-        self.x = 50
-        self.y = 200
-        self.frame=0
-        self.index=0
-        self.speed=0
-        self.dir=[1,0]          # -1 left, +1 right
-
-        self.state="Idle"
+        self.x, self.y = 50, 200 # 초기 마리오 좌표
+        #self.image = load_image('res/MarioIdle.png')
         self.Idle_image = load_image('res/MarioIdle.png')
         self.Run_image = load_image('res/MarioRun.png')
+        self.frame = 0
+        self.index = 0
+        self.velocity = 0     # 속도
+        self.dir = 1          # -1 left, +1 right
+        self.rect = ""
+        self.isJump=0
+        self.mass=70
+        self.event_que = []
+        self.cur_state = IdleState
+        self.cur_state.enter(self, None)
+        #self.state="Idle"
+
+
+    def add_event(self, event):
+        self.event_que.insert(0,event)
 
     def Run(self):
         pass
@@ -19,46 +116,18 @@ class Mario:
     def Jump(self):
         pass
 
-    def change_state(self):
-        pass
+    def update(self):
+        self.cur_state.do(self)
+        if len(self.event_que) > 0:
+            event = self.event_que.pop()
+            self.cur_state.exit(self, event)
+            self.cur_state = next_state_table[self.cur_state][event]
+            self.cur_state.enter(self, event)
 
     def draw(self):
-        # left, bottom, img.넓이 , 높이, x위치, y위치 , x사이즈, y사이즈
-        if self.state == "Idle":
-            self.Idle_image.clip_draw(self.frame * 210, self.index * 290, 210, 290,self.x,self.y,100,140)
-        elif self.state == "Run":
-            self.Run_image.clip_draw(self.frame*223,self.index*275,223,275,self.x,self.y,100,140)
+        self.cur_state.draw(self)
 
-    def handle_event(self, e):
-            if e.type == SDL_KEYDOWN:
-                if e.key == SDLK_RIGHT:
-                    self.speed=1
-                    self.dir[0]= 1
-                    self.state = "Run"
-                    self.index=0
-                elif e.key == SDLK_LEFT:
-                    self.speed=1
-                    self.dir[0] = -1
-                    self.state = "Run"
-                    self.index=1
-                elif e.key == SDLK_UP:
-                    self.speed=1
-                    self.dir[1] = 1
-                    self.state="Idle"  # jump로 바꿔야함
-            elif e.type == SDL_KEYUP:
-                if e.key == SDLK_RIGHT:
-                    self.speed=0
-                    self.state = "Idle"
-                elif e.key == SDLK_LEFT:
-                    self.speed=0
-                    self.state = "Idle"
-                elif e.key == SDLK_UP:
-                    self.speed=0
-                    self.dir[1]=0
-                    self.state = "Idle"  # jump로 바꿔야 함
-
-    def update(self):
-        self.frame= (self.frame+1) % 3   # 프레임
-        # self.handle_event()
-        self.x+=self.dir[0]*self.speed*20
-        self.y+=self.dir[1]*self.speed*20
+    def handle_event(self, event):
+        if (event.type, event.key) in key_event_table:
+            key_event = key_event_table[(event.type, event.key)]
+            self.add_event(key_event)

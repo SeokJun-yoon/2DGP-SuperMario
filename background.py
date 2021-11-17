@@ -14,3 +14,6 @@ class Background:
         # left, bottom, img.넓이 , 높이, x위치, y위치 , x사이즈, y사이즈
         self.image.draw(self.x / 2, 475,self.x,650)
         X / 2, 475, X, 650
+
+    def update(self):
+        pass
