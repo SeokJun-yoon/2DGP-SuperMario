@@ -1,6 +1,9 @@
 import game_framework
 from pico2d import *
 
+canvas_sizeX = 1000
+canvas_sizeY = 800
+
 # Mario Run Speed
 PIXEL_PER_METER = (10.0 / 0.01) # 10 pixel 1 cm
 RUN_SPEED_KMPH = 5.0 # Km / Hour
@@ -14,15 +17,16 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 3
 
 # Mario Event
-RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE = range(5)
+RIGHT_DOWN, LEFT_DOWN, RIGHT_UP, LEFT_UP, SPACE_DOWN, SPACE_UP = range(6)
 
 # key event_table
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT): RIGHT_DOWN,
     (SDL_KEYDOWN, SDLK_LEFT): LEFT_DOWN,
+    (SDL_KEYDOWN, SDLK_SPACE): SPACE_DOWN,
     (SDL_KEYUP, SDLK_RIGHT): RIGHT_UP,
     (SDL_KEYUP, SDLK_LEFT): LEFT_UP,
-    (SDL_KEYDOWN, SDLK_SPACE): SPACE
+    (SDL_KEYUP, SDLK_SPACE): SPACE_UP
 }
 
 
@@ -43,6 +47,10 @@ class IdleState:
 
     def do(mario):
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        mario.y += mario.velocityY * game_framework.frame_time
+
+        mario.y = clamp(225, mario.y, 1000 - 25)
+
 
     def draw(mario):
         if mario.dir == 1:
@@ -78,19 +86,50 @@ class RunState:
         else:
             mario.Run_image.clip_draw(int(mario.frame)*223, mario.index*275, 223, 275, mario.x, mario.y, 100, 140)
 
-# class JumpState:
-#     def enter(mario, event):
-#         if event == SPACE:
+
+# 점프 상태
+class JumpState:
+    def enter(mario, event):
+        mario.velocityY = RUN_SPEED_PPS
+        if event == RIGHT_DOWN:
+            mario.velocity += RUN_SPEED_PPS
+        elif event == LEFT_DOWN:
+            mario.velocity -= RUN_SPEED_PPS
+        elif event == RIGHT_UP:
+            mario.velocity -= RUN_SPEED_PPS
+        elif event == LEFT_UP:
+            mario.velocity += RUN_SPEED_PPS
+        mario.dir = clamp(-1, mario.velocity, 1)
+        pass
+
+    def exit(mario, event):
+        if event == SPACE_UP:
+            mario.velocityY = -RUN_SPEED_PPS
+
+    def do(mario):
+        mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 3
+        mario.x += mario.velocity * game_framework.frame_time
+        mario.y += mario.velocityY * game_framework.frame_time
+        mario.y = clamp(225, mario.y, 1000 - 25)
+        if mario.y<=225:
+            mario.add_event(IdleState)
+
+
+    def draw(mario):
+        if mario.dir == 1:
+            mario.Run_image.clip_draw(int(mario.frame)*223, mario.index*275, 223, 275, mario.x, mario.y, 100, 140)
+        else:
+            mario.Run_image.clip_draw(int(mario.frame)*223, mario.index*275, 223, 275, mario.x, mario.y, 100, 140)
 
 next_state_table = {
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE: IdleState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE: RunState},
-    #SleepState: {LEFT_DOWN: RunState, RIGHT_DOWN: RunState, LEFT_UP: RunState, RIGHT_UP: RunState, SPACE: IdleState}
+    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, SPACE_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE_DOWN: JumpState},
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, SPACE_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE_DOWN: JumpState},
+    JumpState: {RIGHT_UP: JumpState, LEFT_UP: JumpState, SPACE_UP: IdleState, RIGHT_DOWN: JumpState, LEFT_DOWN: JumpState, SPACE_DOWN: JumpState}
 }
 
 class Mario:
     def __init__(self): # 생성자
-        self.x, self.y = 50, 200 # 초기 마리오 좌표
+        self.x, self.y = 50, 225 # 초기 마리오 좌표
         #self.image = load_image('res/MarioIdle.png')
         self.Idle_image = load_image('res/MarioIdle.png')
         self.Run_image = load_image('res/MarioRun.png')
@@ -98,8 +137,7 @@ class Mario:
         self.index = 0
         self.velocity = 0     # 속도
         self.dir = 1          # -1 left, +1 right
-        self.rect = ""
-        self.isJump=0
+        self.velocityY = -10    # y 속도
         self.mass=70
         self.event_que = []
         self.cur_state = IdleState
@@ -113,16 +151,19 @@ class Mario:
     def Run(self):
         pass
 
-    def Jump(self):
+    def Jump(self, j):
         pass
 
     def update(self):
+        print(self.cur_state)
+        print(self.velocity)
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
+
 
     def draw(self):
         self.cur_state.draw(self)
