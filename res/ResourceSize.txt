@@ -1,0 +1,8 @@
+<MARIO>
+MarioIdle : 210 * 290
+MarioRun : 223 * 275
+
+<BOSS>
+BossIdle : 205 * 292
+BossAttack : 280 * 302
+BossHit : 220 * 300
