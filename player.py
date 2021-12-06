@@ -108,6 +108,7 @@ class RunState:
         mario.x += mario.velocity * game_framework.frame_time
         mario.x = clamp(25, mario.x, 1024 - 25)
 
+
     def draw(mario):
         if mario.dir == 1:
             mario.image.clip_draw(
@@ -137,15 +138,15 @@ class JumpState:
         mario.frame = 0
         mario.stateName = "JUMP"
         mario.velocityY = RUN_SPEED_PPS
-        if event == RIGHT_DOWN:
-            mario.velocity += RUN_SPEED_PPS
-        elif event == LEFT_DOWN:
-            mario.velocity -= RUN_SPEED_PPS
-        elif event == RIGHT_UP:
-            mario.velocity -= RUN_SPEED_PPS
-        elif event == LEFT_UP:
-            mario.velocity += RUN_SPEED_PPS
-        mario.dir = clamp(-1, mario.velocity, 1)
+        # if event == RIGHT_DOWN:
+        #     mario.velocity += RUN_SPEED_PPS
+        # elif event == LEFT_DOWN:
+        #     mario.velocity -= RUN_SPEED_PPS
+        # elif event == RIGHT_UP:
+        #     mario.velocity -= RUN_SPEED_PPS
+        # elif event == LEFT_UP:
+        #     mario.velocity += RUN_SPEED_PPS
+        # mario.dir = clamp(-1, mario.velocity, 1)
 
 
     def exit(mario, event):
@@ -157,11 +158,11 @@ class JumpState:
         mario.x += mario.velocity * game_framework.frame_time
         mario.y += mario.velocityY * game_framework.frame_time
         mario.y = clamp(0, mario.y, 1000 - 500)
-        if mario.y<=225:
-            mario.add_event(IdleState)
+        #if mario.y<=225:
+        #    mario.add_event(IdleState)
 
         #print(mario.dir)
-
+        print(mario.velocityY)
 
     def draw(mario):
         if mario.dir == 1:

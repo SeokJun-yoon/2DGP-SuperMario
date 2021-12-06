@@ -63,7 +63,8 @@ def update():
         game_world.remove_object(initblock)
 
     if collide(mario, ground):
-        mario.velocityY = 0
+        if (mario.stateName!="JUMP"):
+            mario.velocityY = 0
 
     global gameTime
     gameTime -= game_framework.frame_time
