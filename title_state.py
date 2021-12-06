@@ -8,7 +8,7 @@ logo_time = 0.0
 
 def enter():
     global image
-    image = load_image('no_using_res/start.png')
+    image = load_image('res/start.png')
 
 
 def exit():
@@ -36,7 +36,7 @@ def draw():
 
 def update():
     global logo_time
-    if (logo_time > 1.0) :
+    if (logo_time > 1.5) :
         logo_time = 0.0
         game_framework.change_state(main_state)
 
