@@ -2,7 +2,7 @@ from pico2d import *
 
 class Ground:
     def __init__(self):
-        self.image = load_image('res/ground.png')
+        self.image = load_image('no_using_res/ground.png')
         #self.x = 75
         #self.y = 75
         #self.width = 150

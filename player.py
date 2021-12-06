@@ -131,8 +131,8 @@ class Mario:
     def __init__(self): # 생성자
         self.x, self.y = 50, 225 # 초기 마리오 좌표
         #self.image = load_image('res/MarioIdle.png')
-        self.Idle_image = load_image('res/MarioIdle.png')
-        self.Run_image = load_image('res/MarioRun.png')
+        self.Idle_image = load_image('no_using_res/MarioIdle.png')
+        self.Run_image = load_image('no_using_res/MarioRun.png')
         self.frame = 0
         self.index = 0
         self.velocity = 0     # 속도
@@ -155,8 +155,8 @@ class Mario:
         pass
 
     def update(self):
-        print(self.cur_state)
-        print(self.velocity)
+        #print(self.cur_state)
+        #print(self.velocity)
         self.cur_state.do(self)
         if len(self.event_que) > 0:
             event = self.event_que.pop()

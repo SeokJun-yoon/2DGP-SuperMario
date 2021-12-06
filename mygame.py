@@ -8,5 +8,5 @@ canvas_sizeX = 1000
 canvas_sizeY = 800
 
 pico2d.open_canvas(canvas_sizeX,canvas_sizeY)
-game_framework.run(main_state)
+game_framework.run(start_state)
 pico2d.close_canvas()

@@ -2,7 +2,7 @@ from pico2d import *
 X,Y=512*2,160*5
 class Background:
     def __init__(self):
-        self.image = load_image('res/Background.png')
+        self.image = load_image('no_using_res/Background.png')
         self.x = 512*2
         self.y = 160*5
         #self.width = 150

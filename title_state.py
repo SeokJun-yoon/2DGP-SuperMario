@@ -8,11 +8,13 @@ logo_time = 0.0
 
 def enter():
     global image
-    image = load_image('res/start.png')
+    image = load_image('no_using_res/start.png')
 
 
 def exit():
     global image
+    global logo_time
+    logo_time = 0.0
     del(image)
 
 
@@ -24,16 +26,22 @@ def handle_events():
         else:
             if (event.type, event.key)==(SDL_KEYDOWN, SDLK_ESCAPE):
                 game_framework.quit()
-            elif (event.type,event.key)==(SDL_KEYDOWN, SDLK_SPACE):
-                game_framework.change_state(main_state)
-
+        pass
 def draw():
     clear_canvas()
     image.draw(500,400,1000,800)
+
     update_canvas()
 
+
 def update():
-    pass
+    global logo_time
+    if (logo_time > 1.0) :
+        logo_time = 0.0
+        game_framework.change_state(main_state)
+
+    delay(0.01)
+    logo_time += 0.01
 
 
 def pause():
