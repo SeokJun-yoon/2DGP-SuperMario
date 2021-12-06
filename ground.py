@@ -1,19 +1,25 @@
 from pico2d import *
 
+image = None
+
 class Ground:
     def __init__(self):
         self.image = load_image('no_using_res/ground.png')
-        #self.x = 75
-        #self.y = 75
+        self.x = 75
+        self.y = 75
         #self.width = 150
         #self.height = 150
         self.size = 15*10
 
+    def get_bb(self):
+        return 0, 0, 1104 * 800 / 240, 32 * 800 / 240
 
     def draw(self):
         # left, bottom, img.넓이 , 높이, x위치, y위치 , x사이즈, y사이즈
-        for i in range(8):
-            self.image.draw(self.size/2+i*self.size, self.size/2,self.size,self.size)
+        #for i in range(8):
+        #    self.image.draw(self.size/2+i*self.size, self.size/2,self.size,self.size)
+        draw_rectangle(*self.get_bb())
+
 
     def update(self):
         pass

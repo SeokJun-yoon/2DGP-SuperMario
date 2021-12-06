@@ -58,7 +58,7 @@ class IdleState:
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_IDLE"]["FRAMESIZE"]
         mario.y += mario.velocityY * game_framework.frame_time
 
-        mario.y = clamp(225, mario.y, 1000 - 25)
+        mario.y = clamp(0, mario.y, 1000 - 25)
 
 
     def draw(mario):
@@ -156,11 +156,11 @@ class JumpState:
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_JUMP"]["FRAMESIZE"]
         mario.x += mario.velocity * game_framework.frame_time
         mario.y += mario.velocityY * game_framework.frame_time
-        mario.y = clamp(225, mario.y, 1000 - 25)
+        mario.y = clamp(0, mario.y, 1000 - 500)
         if mario.y<=225:
             mario.add_event(IdleState)
 
-        print(mario.dir)
+        #print(mario.dir)
 
 
     def draw(mario):
@@ -195,7 +195,7 @@ next_state_table = {
 
 class Mario:
     def __init__(self): # 생성자
-        self.x, self.y = 50, 225 # 초기 마리오 좌표
+        self.x, self.y = 50, 500 # 초기 마리오 좌표
         #self.image = load_image('res/MarioIdle.png')
         self.image = load_image('res/characters.gif')
         self.characterName = "SMALLMARIO"
@@ -204,7 +204,7 @@ class Mario:
         self.index = 0
         self.velocity = 0     # 속도
         self.dir = 1          # -1 left, +1 right
-        self.velocityY = -10    # y 속도
+        self.velocityY = -300    # y 속도
         self.mass=70
         self.event_que = []
         self.cur_state = IdleState
@@ -229,11 +229,14 @@ class Mario:
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
 
-    #def get_bb(self):
-    #    return self.x-50, self.y-50, self.x+50,self.y+50
+    def get_bb(self):
+        return self.x-36, self.y-38, self.x+36,self.y+38
 
     def draw(self):
         self.cur_state.draw(self)
+        #self.font.draw(self.x-60, self.y+50,
+                       #'Time: %3.2f)'%get_time(),(255,255,0))
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
         if (event.type, event.key) in key_event_table:
