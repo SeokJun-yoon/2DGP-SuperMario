@@ -1,0 +1,274 @@
+{
+	"SMALLMARIO": {
+		"RIGHT_IDLE": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 277,
+					"BOTTOM": 342,
+					"WIDTH": 12,
+					"HEIGHT": 15
+				}
+			}
+		},
+		"RIGHT_RUN": {
+			"FRAMESIZE": 3,
+			"FRAMES": {
+				"0": {
+					"LEFT": 292,
+					"BOTTOM": 342,
+					"WIDTH": 12,
+					"HEIGHT": 14
+				},
+				"1": {
+					"LEFT": 307,
+					"BOTTOM": 342,
+					"WIDTH": 11,
+					"HEIGHT": 15
+				},
+				"2": {
+					"LEFT": 321,
+					"BOTTOM": 342,
+					"WIDTH": 15,
+					"HEIGHT": 15
+				}
+			}
+		},
+		"RIGHT_JUMP": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 355,
+					"BOTTOM": 340,
+					"WIDTH": 16,
+					"HEIGHT": 17
+				}
+			}
+		},
+		"RIGHT_DEATH": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 486,
+					"BOTTOM": 341,
+					"WIDTH": 14,
+					"HEIGHT": 14
+				}
+			}
+		},
+		"LEFT_IDLE": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 224,
+					"BOTTOM": 342,
+					"WIDTH": 12,
+					"HEIGHT": 15
+				}
+			}
+		},
+		"LEFT_RUN": {
+			"FRAMESIZE": 3,
+			"FRAMES": {
+				"0": {
+					"LEFT": 209,
+					"BOTTOM": 342,
+					"WIDTH": 12,
+					"HEIGHT": 14
+				},
+				"1": {
+					"LEFT": 195,
+					"BOTTOM": 342,
+					"WIDTH": 11,
+					"HEIGHT": 15
+				},
+				"2": {
+					"LEFT": 177,
+					"BOTTOM": 342,
+					"WIDTH": 15,
+					"HEIGHT": 15
+				}
+			}
+		},
+		"LEFT_JUMP": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 142,
+					"BOTTOM": 340,
+					"WIDTH": 16,
+					"HEIGHT": 17
+				}
+			}
+		},
+		"LEFT_DEATH": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 13,
+					"BOTTOM": 341,
+					"WIDTH": 14,
+					"HEIGHT": 14
+				}
+			}
+		}
+	},
+	"BIGMARIO": {
+		"RIGHT_IDLE": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 258,
+					"BOTTOM": 352,
+					"WIDTH": 16,
+					"HEIGHT": 48
+				}
+			}
+		},
+		"RIGHT_RUN": {
+			"FRAMESIZE": 3,
+			"FRAMES": {
+				"0": {
+					"LEFT": 296,
+					"BOTTOM": 354,
+					"WIDTH": 16,
+					"HEIGHT": 44
+				},
+				"1": {
+					"LEFT": 316,
+					"BOTTOM": 353,
+					"WIDTH": 13,
+					"HEIGHT": 46
+				},
+				"2": {
+					"LEFT": 331,
+					"BOTTOM": 353,
+					"WIDTH": 16,
+					"HEIGHT": 47
+				}
+			}
+		},
+		"RIGHT_JUMP": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 369,
+					"BOTTOM": 351,
+					"WIDTH": 16,
+					"HEIGHT": 49
+				}
+			}
+		},
+		"LEFT_IDLE": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 239,
+					"BOTTOM": 352,
+					"WIDTH": 16,
+					"HEIGHT": 48
+				}
+			}
+		},
+		"LEFT_RUN": {
+			"FRAMESIZE": 3,
+			"FRAMES": {
+				"0": {
+					"LEFT": 202,
+					"BOTTOM": 354,
+					"WIDTH": 16,
+					"HEIGHT": 44
+				},
+				"1": {
+					"LEFT": 185,
+					"BOTTOM": 353,
+					"WIDTH": 13,
+					"HEIGHT": 46
+				},
+				"2": {
+					"LEFT": 166,
+					"BOTTOM": 353,
+					"WIDTH": 16,
+					"HEIGHT": 47
+				}
+			}
+		},
+		"LEFT_JUMP": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 128,
+					"BOTTOM": 351,
+					"WIDTH": 16,
+					"HEIGHT": 49
+				}
+			}
+		}
+	},
+	"MONSTER1": {
+		"MOVE": {
+			"FRAMESIZE": 2,
+			"FRAMES": {
+				"0": {
+					"LEFT": 296,
+					"BOTTOM": 197,
+					"WIDTH": 16,
+					"HEIGHT": 17
+				},
+				"1": {
+					"LEFT": 315,
+					"BOTTOM": 197,
+					"WIDTH": 16,
+					"HEIGHT": 17
+				}
+			}
+		},
+		"DEATH": {
+			"FRAMESIZE": 1,
+			"FRAMES": {
+				"0": {
+					"LEFT": 277,
+					"BOTTOM": 197,
+					"WIDTH": 16,
+					"HEIGHT": 9
+				}
+			}
+		}
+	},
+	"MONSTER2": {
+		"RIGHT_MOVE": {
+			"FRAMESIZE": 2,
+			"FRAMES": {
+				"0": {
+					"LEFT": 296,
+					"BOTTOM": 164,
+					"WIDTH": 16,
+					"HEIGHT": 29
+				},
+				"1": {
+					"LEFT": 315,
+					"BOTTOM": 164,
+					"WIDTH": 16,
+					"HEIGHT": 29
+				}
+			}
+		},
+		"LEFT_MOVE": {
+			"FRAMESIZE": 2,
+			"FRAMES": {
+				"0": {
+					"LEFT": 201,
+					"BOTTOM": 164,
+					"WIDTH": 16,
+					"HEIGHT": 29
+				},
+				"1": {
+					"LEFT": 182,
+					"BOTTOM": 164,
+					"WIDTH": 16,
+					"HEIGHT": 29
+				}
+			}
+		}
+	}
+}
