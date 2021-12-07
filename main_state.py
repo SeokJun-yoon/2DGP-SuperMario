@@ -2,8 +2,9 @@ from pico2d import *
 import title_state
 import game_framework
 import game_world
-from object import Object
+import server
 
+from object import Object
 from player import Mario
 from ground import Ground
 from background import Background
@@ -15,7 +16,7 @@ with open('ground.json', 'r') as f:
 
 name = "MainState"
 
-mario = None
+#mario = None
 ui = None
 gameTime = 0
 groundTiles = []
@@ -23,12 +24,11 @@ testob = []
 initblock = []
 
 def enter():
-    global mario
-    global ground
+
     global ui
-    mario = Mario()
+    server.mario = Mario()
     ground = Ground()
-    background = Background()
+    server.background = Background()
 
     ui = UI()
     ui.setCurrentState("mainState")
@@ -77,9 +77,9 @@ def enter():
     # for ob in testob:
     #     game_world.add_object(ob, 1)
 
-    game_world.add_object(mario, 1)
+    game_world.add_object(server.mario, 1)
     #game_world.add_object(ground, 1)
-    game_world.add_object(background, 0)
+    game_world.add_object(server.background, 0)
 
     for ib in initblock:
         game_world.add_object(ib,1)
@@ -101,7 +101,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
                 game_framework.quit()
         else:
-            mario.handle_event(event)
+            server.mario.handle_event(event)
 
 def update():
     for game_object in game_world.all_objects():
@@ -111,9 +111,9 @@ def update():
     #     game_world.remove_object(initblock)
 
     for groundTile in groundTiles:
-        if collide(mario, groundTile):
-            if mario.stateName != "JUMP":
-                mario.velocityY = 0
+        if collide(server.mario, groundTile):
+            if server.mario.stateName != "JUMP":
+                server.mario.velocityY = 0
 
     # for s in testob:
     #     if s.type == 1:
