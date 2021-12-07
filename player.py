@@ -69,7 +69,7 @@ class IdleState:
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                server.mario.x, server.mario.y,
+                server.mario.screenX, server.mario.y,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"] * 5,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"] * 5)
         else:
@@ -78,7 +78,7 @@ class IdleState:
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                server.mario.x, server.mario.y,
+                server.mario.screenX, server.mario.y,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -90,12 +90,16 @@ class RunState:
         mario.frame = 0
         mario.stateName = "RUN"
         if event==RIGHT_DOWN:
+            mario.isRight = True
             mario.velocity +=RUN_SPEED_PPS
         elif event==LEFT_DOWN:
+            mario.isRight = False
             mario.velocity -= RUN_SPEED_PPS
         elif event ==RIGHT_UP:
+            mario.isRight = False
             mario.velocity -=RUN_SPEED_PPS
         elif event==LEFT_UP:
+            mario.isRight = False
             mario.velocity +=RUN_SPEED_PPS
         mario.dir = clamp(-1, mario.velocity, 1)
         pass
@@ -106,27 +110,33 @@ class RunState:
     def do(mario):
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_RUN"]["FRAMESIZE"]
         mario.x += mario.velocity * game_framework.frame_time
-        if(mario.x >= server.background.canvas_width//2):
-            mario.cameraX
+#
+        mario.x = clamp(mario.minimumX, mario.x, 4000)
 
-        #mario.x = clamp(25, mario.x, 1024 - 25)
+        if mario.isRight == True and mario.screenX >= server.background.canvas_width // 2 :
+            mario.scrollMode = True
+        else:
+            mario.scrollMode = False
+
+        if mario.scrollMode == True :
+            mario.screenX = server.background.canvas_width // 2
+            mario.minimumX = mario.x - server.background.canvas_width // 2
+        else:
+            mario.screenX += mario.velocity * game_framework.frame_time
+            mario.screenX = clamp(0, mario.screenX, server.background.canvas_width // 2)
 
 
     def draw(mario):
         #cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
         #cx, cy = mario.x - server.background.window_left, mario.y - server.background.window_bottom
-        mario.cx = server.background.canvas_width // 2
 
-        print("cx:",mario.cx)
-        print("mario.x:", server.mario.x)
-        cy = server.mario.y
         if mario.dir == 1:
             mario.image.clip_draw(
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["LEFT"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                mario.cx, cy,
+                server.mario.screenX, server.mario.y,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"] * 5,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"] * 5)
         else:
@@ -135,7 +145,7 @@ class RunState:
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                server.mario.x, server.mario.y,
+                server.mario.screenX, server.mario.y,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -165,6 +175,57 @@ class JumpState:
 
     def do(mario):
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_JUMP"]["FRAMESIZE"]
+        #mario.x += mario.velocity * game_framework.frame_time
+        mario.y += mario.velocityY * game_framework.frame_time
+        mario.y = clamp(0, mario.y, 1000 - 500)
+        #if mario.y<=225:
+        #    mario.add_event(IdleState)
+
+        #print(mario.dir)
+        print(mario.y)
+
+    def draw(mario):
+        #cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+
+        # 일반
+        #cx, cy = mario.x - server.background.window_left, mario.y - server.background.window_bottom
+
+        if mario.dir == 1:
+            mario.image.clip_draw(
+                characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["LEFT"],
+                characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
+                characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
+                characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
+                server.mario.screenX, server.mario.y,
+                characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
+                    "WIDTH"] * 5,
+                characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
+                    "HEIGHT"] * 5)
+        else:
+            mario.image.clip_draw(
+                characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["LEFT"],
+                characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
+                characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
+                characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
+                server.mario.screenX, server.mario.y,
+                characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
+                    "WIDTH"] * 5,
+                characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
+                    "HEIGHT"] * 5)
+
+# 점프 움직임 상태
+class JumpMovingState:
+    def enter(mario, event):
+        mario.frame = 0
+        mario.stateName = "JUMPMOVING"
+        mario.velocityY = RUN_SPEED_PPS
+
+    def exit(mario, event):
+        if event == SPACE_UP:
+            mario.velocityY = -RUN_SPEED_PPS
+
+    def do(mario):
+        mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_JUMP"]["FRAMESIZE"]
         mario.x += mario.velocity * game_framework.frame_time
         mario.y += mario.velocityY * game_framework.frame_time
         mario.y = clamp(0, mario.y, 1000 - 500)
@@ -185,7 +246,7 @@ class JumpState:
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                server.mario.x, server.mario.y,
+                server.mario.screenX, server.mario.y,
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -196,16 +257,17 @@ class JumpState:
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                server.mario.x, server.mario.y,
+                server.mario.screenX, server.mario.y,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "HEIGHT"] * 5)
 
 next_state_table = {
-    IdleState: {RIGHT_UP: RunState, LEFT_UP: RunState, SPACE_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE_DOWN: JumpState},
-    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, SPACE_UP: IdleState, LEFT_DOWN: IdleState, RIGHT_DOWN: IdleState, SPACE_DOWN: JumpState},
-    JumpState: {RIGHT_UP: JumpState, LEFT_UP: JumpState, SPACE_UP: IdleState, RIGHT_DOWN: JumpState, LEFT_DOWN: JumpState, SPACE_DOWN: JumpState}
+    IdleState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, SPACE_UP: IdleState, RIGHT_DOWN: RunState, LEFT_DOWN: RunState, SPACE_DOWN: JumpState},
+    RunState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, SPACE_UP: IdleState, LEFT_DOWN: RunState, RIGHT_DOWN: RunState, SPACE_DOWN: JumpMovingState},
+    JumpState: {RIGHT_UP: IdleState, LEFT_UP: IdleState, SPACE_UP: IdleState, RIGHT_DOWN: JumpMovingState, LEFT_DOWN: JumpMovingState, SPACE_DOWN: JumpState},
+    JumpMovingState: {RIGHT_UP: IdleState, LEFT_UP: JumpMovingState, SPACE_UP: JumpMovingState, RIGHT_DOWN: JumpMovingState, LEFT_DOWN: JumpMovingState, SPACE_DOWN: JumpState}
 }
 
 class Mario:
@@ -221,10 +283,10 @@ class Mario:
         self.dir = 1          # -1 left, +1 right
         self.velocityY = -300    # y 속도
         self.mass=70
-
-#      self.cx = server.background.canvas_width//2
-   #     self.screenX = self.x
-    #    self.cameraX = server.background.canvas_width//2
+        self.screenX = self.x
+        self.minimumX = 0
+        self.scrollmode = False
+        self.isRight = False
 
         self.event_que = []
         self.cur_state = IdleState
@@ -235,14 +297,10 @@ class Mario:
     def add_event(self, event):
         self.event_que.insert(0,event)
 
-    def Run(self):
-        pass
-
-    def Jump(self, j):
-        pass
 
     def update(self):
         self.cur_state.do(self)
+        print(self.cur_state)
         if len(self.event_que) > 0:
             event = self.event_que.pop()
             self.cur_state.exit(self, event)
