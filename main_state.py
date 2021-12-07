@@ -71,8 +71,8 @@ def enter():
     #     i.set_bb()
 
 
-    for tile in groundTiles:
-        game_world.add_object(tile, 1)
+    # for tile in groundTiles:
+    #     game_world.add_object(tile, 1)
 
     # for ob in testob:
     #     game_world.add_object(ob, 1)

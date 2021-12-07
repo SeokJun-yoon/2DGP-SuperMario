@@ -61,14 +61,15 @@ class IdleState:
 
 
     def draw(mario):
-        cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+        #cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+        #cx, cy = mario.x - server.background.window_left, mario.y - server.background.window_bottom
         if mario.dir == 1:
             mario.image.clip_draw(
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["LEFT"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                cx, cy,
+                server.mario.x, server.mario.y,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"] * 5,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"] * 5)
         else:
@@ -77,7 +78,7 @@ class IdleState:
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                cx, cy,
+                server.mario.x, server.mario.y,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -105,18 +106,27 @@ class RunState:
     def do(mario):
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_RUN"]["FRAMESIZE"]
         mario.x += mario.velocity * game_framework.frame_time
+        if(mario.x >= server.background.canvas_width//2):
+            mario.cameraX
+
         #mario.x = clamp(25, mario.x, 1024 - 25)
 
 
     def draw(mario):
-        cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+        #cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+        #cx, cy = mario.x - server.background.window_left, mario.y - server.background.window_bottom
+        mario.cx = server.background.canvas_width // 2
+
+        print("cx:",mario.cx)
+        print("mario.x:", server.mario.x)
+        cy = server.mario.y
         if mario.dir == 1:
             mario.image.clip_draw(
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["LEFT"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                cx, cy,
+                mario.cx, cy,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"] * 5,
                 characters[mario.characterName]["RIGHT_"+mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"] * 5)
         else:
@@ -125,7 +135,7 @@ class RunState:
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                cx, cy,
+                server.mario.x, server.mario.y,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -162,17 +172,20 @@ class JumpState:
         #    mario.add_event(IdleState)
 
         #print(mario.dir)
-        print(mario.velocityY)
+        print(mario.y)
 
     def draw(mario):
-        cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+        #cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
+
+        # 일반
+        #cx, cy = mario.x - server.background.window_left, mario.y - server.background.window_bottom
         if mario.dir == 1:
             mario.image.clip_draw(
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["LEFT"],
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                cx, cy,
+                server.mario.x, server.mario.y,
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["RIGHT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -183,7 +196,7 @@ class JumpState:
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["BOTTOM"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["WIDTH"],
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))]["HEIGHT"],
-                cx, cy,
+                server.mario.x, server.mario.y,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
                     "WIDTH"] * 5,
                 characters[mario.characterName]["LEFT_" + mario.stateName]["FRAMES"][str(int(mario.frame))][
@@ -197,7 +210,7 @@ next_state_table = {
 
 class Mario:
     def __init__(self): # 생성자
-        self.x, self.y = 50, 150 # 초기 마리오 좌표
+        self.x, self.y = 100, 150 # 초기 마리오 좌표
         #self.image = load_image('res/MarioIdle.png')
         self.image = load_image('res/characters.gif')
         self.characterName = "SMALLMARIO"
@@ -208,6 +221,11 @@ class Mario:
         self.dir = 1          # -1 left, +1 right
         self.velocityY = -300    # y 속도
         self.mass=70
+
+        self.cx = server.background.canvas_width//2
+        self.screenX = self.x
+        self.cameraX = server.background.canvas_width//2
+
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
@@ -230,6 +248,10 @@ class Mario:
             self.cur_state.exit(self, event)
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
+
+        # 일반 스크롤링의 경우
+        # self.x = clamp(0, self.x, server.background.w-1)
+        # self.y = clamp(0, self.y, server.background.h-1)
 
     def get_bb(self):
         return self.x-36, self.y-38, self.x+36,self.y+38
