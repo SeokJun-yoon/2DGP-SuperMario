@@ -14,6 +14,9 @@ from ui import UI
 with open('ground.json', 'r') as f:
     ground_data = json.load(f)
 
+with open('map_data.json', 'r') as f:
+    map_data = json.load(f)
+
 name = "MainState"
 
 #mario = None
@@ -22,6 +25,7 @@ gameTime = 0
 groundTiles = []
 testob = []
 initblock = []
+objects = []
 
 def enter():
 
@@ -43,6 +47,15 @@ def enter():
         groundTiles[i].x = int(ground_data["firstStage"][str(i)]["x"])
         groundTiles[i].y = int(ground_data["firstStage"][str(i)]["y"])
         groundTiles[i].set_bb()
+
+    global objects
+    objects = [Object(map_data["map"][str(i)]["Name"]) for i in range(map_data["mapRange"])]
+
+    for i in range(map_data["mapRange"]):
+        objects[i].x = int(map_data["map"][str(i)]["x"])
+        objects[i].y = int(map_data["map"][str(i)]["y"])
+        objects[i].set_bb()
+
 
     global initblock
     initblock = [Object("initblock"), Object("pipe1"),Object("pipe2"),Object("pipe3")]
@@ -77,7 +90,10 @@ def enter():
     # for ob in testob:
     #     game_world.add_object(ob, 1)
 
+    for ob in objects:
+        game_world.add_object(ob, 1)
     game_world.add_object(server.mario, 1)
+
     #game_world.add_object(ground, 1)
     game_world.add_object(server.background, 0)
 

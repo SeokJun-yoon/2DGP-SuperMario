@@ -222,9 +222,9 @@ class Mario:
         self.velocityY = -300    # y 속도
         self.mass=70
 
-        self.cx = server.background.canvas_width//2
-        self.screenX = self.x
-        self.cameraX = server.background.canvas_width//2
+#      self.cx = server.background.canvas_width//2
+   #     self.screenX = self.x
+    #    self.cameraX = server.background.canvas_width//2
 
         self.event_que = []
         self.cur_state = IdleState
