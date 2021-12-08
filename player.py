@@ -14,7 +14,7 @@ canvas_sizeY = 800
 PIXEL_PER_METER = (10.0 / 0.01) # 10 pixel 1 cm
 RUN_SPEED_KMPH = 3.0 # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH*1000.0/60.0)
-RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)-
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
 # Mario Action Speed
@@ -454,7 +454,7 @@ next_state_table = {
 
 class Mario:
     def __init__(self): # 생성자
-        self.x, self.y = 100, 300 # 초기 마리오 좌표
+        self.x, self.y = 100, 200 # 초기 마리오 좌표
         #self.image = load_image('res/MarioIdle.png')
         self.image = load_image('res/characters.gif')
         self.characterName = "SMALLMARIO"

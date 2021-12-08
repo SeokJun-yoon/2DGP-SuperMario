@@ -8,6 +8,7 @@ from object import Object
 from player import Mario
 from ground import Ground
 from background import Background
+from monsters import Monster1
 from initblock import Initblock
 from ui import UI
 
@@ -17,15 +18,17 @@ with open('ground.json', 'r') as f:
 with open('map_data.json', 'r') as f:
     map_data = json.load(f)
 
+with open('monster1_pos.json', 'r') as f:
+    monster1_pos = json.load(f)
+
 name = "MainState"
 
 #mario = None
 ui = None
 gameTime = 0
 groundTiles = []
-testob = []
-initblock = []
 objects = []
+monster1 = []
 
 def enter():
 
@@ -52,18 +55,18 @@ def enter():
     objects = [Object(map_data["map"][str(i)]["Name"]) for i in range(map_data["mapRange"])]
 
     for i in range(map_data["mapRange"]):
-        objects[i].x = int(map_data["map"][str(i)]["x"]) -32
+        objects[i].x = int(map_data["map"][str(i)]["x"]) - 32
         objects[i].y = int(map_data["map"][str(i)]["y"])
         objects[i].set_bb()
 
+    global monster1
+    monster1 = [Monster1() for i in range(monster1_pos['monster1_count']+1)]
 
-    global initblock
-    initblock = [Object("initblock"), Object("pipe1"),Object("pipe2"),Object("pipe3")]
-    for i,test in enumerate(initblock):
-        test.checkType()
-        test.x = 200 + i * 100
-        test.y = 300 + i * 100
-        test.set_bb()
+    for i in range(monster1_pos["monster1_count"]):
+        monster1[i].x = int(monster1_pos["pos"][str(i+1)]["x"]) - 32
+        monster1[i].y = int(monster1_pos["pos"][str(i+1)]["y"])
+        monster1[i].set_bb()
+
 
     for tile in groundTiles:
         game_world.add_object(tile, 1)
@@ -71,13 +74,15 @@ def enter():
 
     for ob in objects:
         game_world.add_object(ob, 1)
+
+    for monster in monster1:
+        game_world.add_object(monster,1)
+
     game_world.add_object(server.mario, 1)
 
 
     game_world.add_object(server.background, 0)
 
-    for ib in initblock:
-        game_world.add_object(ib,1)
 
 def exit():
     game_world.clear()
