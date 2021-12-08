@@ -52,7 +52,7 @@ def enter():
     objects = [Object(map_data["map"][str(i)]["Name"]) for i in range(map_data["mapRange"])]
 
     for i in range(map_data["mapRange"]):
-        objects[i].x = int(map_data["map"][str(i)]["x"])
+        objects[i].x = int(map_data["map"][str(i)]["x"]) -32
         objects[i].y = int(map_data["map"][str(i)]["y"])
         objects[i].set_bb()
 
@@ -65,36 +65,15 @@ def enter():
         test.y = 300 + i * 100
         test.set_bb()
 
-    # global testob
-    # testob = [Object("qmark")]
-    #
-    # testob.append(Object("pipe1"))
-    #
-    #
-    # for i in testob:
-    #     i.checkType()
-    #     i.x = 500
-    #     i.y = 350
-    #
-    #
-    # testob[1].x = 800
-    # testob[1].y = 500
-    #
-    # for i in testob:
-    #     i.set_bb()
+    for tile in groundTiles:
+        game_world.add_object(tile, 1)
 
-
-    # for tile in groundTiles:
-    #     game_world.add_object(tile, 1)
-
-    # for ob in testob:
-    #     game_world.add_object(ob, 1)
 
     for ob in objects:
         game_world.add_object(ob, 1)
     game_world.add_object(server.mario, 1)
 
-    #game_world.add_object(ground, 1)
+
     game_world.add_object(server.background, 0)
 
     for ib in initblock:
@@ -128,8 +107,7 @@ def update():
 
     for groundTile in groundTiles:
         if collide(server.mario, groundTile):
-            if server.mario.stateName != "JUMP":
-                server.mario.velocityY = 0
+            server.mario.isInground = True
 
     # for s in testob:
     #     if s.type == 1:

@@ -1,4 +1,6 @@
 from pico2d import *
+import server
+import game_framework
 
 SIZE = 4
 NONCOLLIDABLE = ["bush1", "bush2", "bush3", "cloud1", "cloud2", "cloud3", "hill1", "hill2"]
@@ -72,7 +74,10 @@ class Object:
         draw_rectangle(*self.get_secondbb())
 
     def update(self):
-        pass
+        if(server.mario.screenLock == False):
+            self.x -= server.mario.velocity*game_framework.frame_time
+            self.set_bb()
+
 
     def checkType(self):
         if self.fileName in COLLIDABLE:
