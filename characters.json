@@ -45,17 +45,6 @@
 				}
 			}
 		},
-		"RIGHT_JUMPMOVING": {
-			"FRAMESIZE": 1,
-			"FRAMES": {
-				"0": {
-					"LEFT": 355,
-					"BOTTOM": 340,
-					"WIDTH": 16,
-					"HEIGHT": 17
-				}
-			}
-		},
 		"RIGHT_DEATH": {
 			"FRAMESIZE": 1,
 			"FRAMES": {
