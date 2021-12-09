@@ -79,9 +79,8 @@ def enter():
         game_world.add_object(monster,1)
 
     game_world.add_object(server.mario, 1)
-
-
     game_world.add_object(server.background, 0)
+
 
 
 def exit():
@@ -110,9 +109,31 @@ def update():
     # if collide(mario, initblock):
     #     game_world.remove_object(initblock)
 
+    for ms1 in monster1:
+        if collide(server.mario, ms1):
+            print("COLLISION")
+
+        for ob in objects:
+            if ob.fileName == "hardblock":
+                if collide(ob, ms1):
+                    print("MONSTER COLLISION")
+                    ms1.dir *= -1
+
+        # for gt in groundTiles:
+        #     if collide(gt, ms1):
+        #         print("MONSTER GROUND COLLISION")
+
+    #for ob in objects:
+        #if collide(server.mario, ob):
+            #game_world.remove_object(ob)
+
     for groundTile in groundTiles:
         if collide(server.mario, groundTile):
             server.mario.isInground = True
+            break
+        # else:
+        #         #     server.mario.isInground = False
+            #print("여기서충돌", server.mario.isInground)
 
     # for s in testob:
     #     if s.type == 1:

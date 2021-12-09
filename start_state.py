@@ -13,7 +13,7 @@ myUI = None
 
 def enter():
     global image
-    image = load_image('res/start.png')
+    image = load_image('res/Intro.png')
     global myUI
     myUI = UI()
     myUI.setCurrentState("StartState")

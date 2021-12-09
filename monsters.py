@@ -41,6 +41,7 @@ class Monster1:
 
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[self.characterName]["MOVE"]["FRAMESIZE"]
         self.x += (self.velocity * game_framework.frame_time)*self.dir
+        self.x = clamp(self.x - 100, self.x, self.x + 100)
         self.set_bb()
 
         #self.x = clamp(0, self.x, 500)

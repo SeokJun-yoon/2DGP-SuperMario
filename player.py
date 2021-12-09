@@ -56,8 +56,11 @@ class IdleState:
     def do(mario):
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_IDLE"]["FRAMESIZE"]
         mario.y += mario.velocityY * game_framework.frame_time
+        #print(mario.isInground)
 
-        mario.y = clamp(128 + 40, mario.y, 1000 - 25)
+        if mario.isInground == True:
+            mario.velocityY = 0
+        #mario.y = clamp(128 + 40, mario.y, 1000 - 25)
 
 
     def draw(mario):
@@ -103,6 +106,7 @@ class RunState:
             mario.isRight = False
             mario.velocity +=RUN_SPEED_PPS
 
+
         mario.velocity = clamp(-RUN_SPEED_PPS, mario.velocity, RUN_SPEED_PPS)
         mario.dir = clamp(-1, mario.velocity, 1)
         pass
@@ -115,7 +119,9 @@ class RunState:
     def do(mario):
         mario.frame = (mario.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % characters[mario.characterName]["RIGHT_RUN"]["FRAMESIZE"]
         mario.x += mario.velocity * game_framework.frame_time
-#
+        mario.y += mario.velocityY * game_framework.frame_time
+        #print(mario.velocityY)
+        #print(mario.isInground)
         mario.x = clamp(mario.minimumX, mario.x, 40000)
 
         if mario.isRight == True and mario.screenX >= server.background.canvas_width // 2 :
@@ -132,6 +138,10 @@ class RunState:
             mario.screenX = clamp(0, mario.screenX, server.background.canvas_width//2)
             mario.screenLock = True
 
+        if mario.isInground == False:
+            mario.velocityY = -RUN_SPEED_PPS
+        else:
+            mario.velocityY = 0
 
     def draw(mario):
         #cx, cy = server.background.canvas_width // 2, server.background.canvas_height // 2
@@ -170,7 +180,7 @@ class JumpState:
             mario.isInground = False
             mario.isGoUp = True
         else:
-            pass
+            mario.velocityY = -RUN_SPEED_PPS
 
         if event == RIGHT_DOWN:
             mario.isMove = True
@@ -454,7 +464,7 @@ next_state_table = {
 
 class Mario:
     def __init__(self): # 생성자
-        self.x, self.y = 100, 200 # 초기 마리오 좌표
+        self.x, self.y = 100, 240 # 초기 마리오 좌표
         #self.image = load_image('res/MarioIdle.png')
         self.image = load_image('res/characters.gif')
         self.characterName = "SMALLMARIO"
@@ -474,7 +484,6 @@ class Mario:
         self.screenLock = True
 
         self.isMove = False
-        self.isInGround = False
         self.event_que = []
         self.cur_state = IdleState
         self.cur_state.enter(self, None)
@@ -488,7 +497,9 @@ class Mario:
 
     def update(self):
         self.cur_state.do(self)
-        print("현재 스테이트 :", self.cur_state)
+
+        # print("현재 스테이트 :", self.cur_state)
+
         # print("screenLock : ", self.screenLock)
         # print("scrollmode : ", self.scrollmode)
         # print("velocity : ", self.velocity)
